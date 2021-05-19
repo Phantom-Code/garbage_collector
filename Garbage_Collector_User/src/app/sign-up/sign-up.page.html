@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sign Up</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #form="ngForm" (ngSubmit)="onSubmitForm(form.value)">
+    <div class="container">
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input
+          type="email"
+          name="email"
+          placeholder="e.g. example@mail.com"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          required
+          ngModel
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Password</ion-label>
+        <ion-input
+          type="password"
+          name="pass"
+          minlength="6"
+          placeholder="password"
+          required
+          ngModel
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Confirm Password</ion-label>
+        <ion-input
+          type="password"
+          name="cpass"
+          minlength="6"
+          placeholder="confirm password"
+          required
+          ngModel
+        ></ion-input>
+      </ion-item>
+
+      <ion-button type="submit" expand="block" [disabled]="form.invalid"
+        >Sign Up</ion-button
+      >
+    </div>
+  </form>
+  <p>
+    Already have an account ? <a [routerLink]="['/sign-in']">Sign In here</a>
+  </p>
+</ion-content>
