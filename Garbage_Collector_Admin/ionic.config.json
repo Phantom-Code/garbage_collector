@@ -1,0 +1,7 @@
+{
+  "name": "Garbage_Collector_Admin",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

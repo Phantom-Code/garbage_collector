@@ -16,6 +16,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { AuthService } from '../services/auth.service';
 
+declare var H: any;
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -34,6 +35,11 @@ export class HomePage implements OnInit {
   user: any;
   location: any;
   userID: any;
+  platform: any;
+  service: any;
+  locationId: any;
+  locationTitle: any;
+  city: any;
   constructor(
     public loadingController: LoadingController,
     private sanitizer: DomSanitizer,
@@ -47,6 +53,11 @@ export class HomePage implements OnInit {
     this.warmedup = false;
     this.imageReady = false;
     this.loading = false;
+    //
+    this.platform = new H.service.Platform({
+      apikey: '3JkAK0tfZwMD5fTTvbcWpIwwL5HN00dPlwJ8MgWfPcM',
+    });
+    this.service = this.platform.getSearchService();
   }
   async ngOnInit() {
     if (!this.auth.isLoggedIn()) {
@@ -169,11 +180,16 @@ export class HomePage implements OnInit {
       percentage: this.percentage,
     });
     await this.getCurrentPosition();
+    console.log(this.locationTitle, this.city);
+
     this.presentLoading();
     const imageDoc = await this.store.collection('images').add({
       imageData: this.imageData,
       percentage: this.percentage,
       location: {
+        id: this.locationId,
+        title: this.locationTitle,
+        city: this.city,
         latitude: this.location.coords.latitude,
         longitude: this.location.coords.longitude,
         timestamp: this.location.timestamp,
@@ -207,6 +223,21 @@ export class HomePage implements OnInit {
   async getCurrentPosition() {
     this.location = await Geolocation.getCurrentPosition();
     console.log(this.location);
+    await this.service.reverseGeocode(
+      {
+        at:
+          this.location.coords.latitude.toString() +
+          ',' +
+          this.location.coords.longitude.toString(),
+      },
+      (result) => {
+        this.locationId = result.items[0].id;
+        this.locationTitle = result.items[0].title;
+        this.city = result.items[0].address.city;
+      },
+      alert
+    );
+    console.log(this.city, 'getpos');
   }
   // Helper functions >>>>>>>>>
   // Loading overlay......
@@ -229,7 +260,32 @@ export class HomePage implements OnInit {
   }
   //delays code for given ms
   delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  //
+  async test() {
+    console.log('test works');
 
+    this.location = await Geolocation.getCurrentPosition();
+    console.log(this.location);
+    this.service.reverseGeocode(
+      {
+        at:
+          this.location.coords.latitude.toString() +
+          ',' +
+          this.location.coords.longitude.toString(),
+      },
+      (result) => {
+        console.log(result.items);
+        this.locationId = result.items[0].id;
+        this.locationTitle = result.items[0].title;
+        this.city = result.items[0].address.city;
+      },
+      alert
+    );
+    // this.location.coords.latitude;
+    // this.location.coords.longitude;
+
+    // this.geo.getLocationData()
+  }
   //loads model and tests
   //may be not needed
   async dryRun() {

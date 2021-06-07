@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Garbage_Collector_Admin",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
